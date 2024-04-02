@@ -2,6 +2,7 @@ import { ClerkProvider, SignedIn, SignedOut } from '@clerk/nextjs';
 import CssBaseline from '@material-ui/core/CssBaseline';
 // MUI Setup
 import { StylesProvider, ThemeProvider } from '@material-ui/core/styles';
+import { GoogleAnalytics } from '@next/third-parties/google';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
 import PropTypes from 'prop-types';
@@ -11,6 +12,7 @@ import Loader from '../components/Loader';
 import Layout from '../components/layout/Layout';
 import { theme } from '../shared/theme';
 import '../styles/global.css';
+
 // Clerk Env
 const clerkSignInURL = process.env.NEXT_PUBLIC_CLERK_SIGN_IN;
 const publicPages = ['/', '/sign-in/[[...index]]', '/sign-up/[[...index]]'];
@@ -76,6 +78,7 @@ function MyApp({ Component, pageProps }) {
               )}
             </Layout>
           )}
+          <GoogleAnalytics gaId={process.env.NEXT_PUBLIC_GOOGLE_ANALYTICS} />
         </ClerkProvider>
       </StylesProvider>
     </ThemeProvider>
