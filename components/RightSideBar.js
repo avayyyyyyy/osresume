@@ -1,3 +1,4 @@
+import { useUser } from '@clerk/nextjs';
 import { Tooltip } from '@material-ui/core';
 import Button from '@material-ui/core/Button';
 import Drawer from '@material-ui/core/Drawer';
@@ -6,6 +7,7 @@ import useMediaQuery from '@material-ui/core/useMediaQuery';
 import FormatColorTextIcon from '@material-ui/icons/FormatColorText';
 import PrintIcon from '@material-ui/icons/Print';
 import SaveIcon from '@material-ui/icons/Save';
+import { sendGTMEvent } from '@next/third-parties/google';
 import clsx from 'clsx';
 import React from 'react';
 import GoogleFontsList from './fonts/GoogleFontsList';
@@ -34,6 +36,7 @@ const sections = [
 
 const RightSideBar = ({ handlePrint }) => {
   const matches = useMediaQuery('(min-width:1024px)');
+  const { user } = useUser();
   const sectionTitles = sections.map(e => e.label);
   const sectionDrawerStates = {};
   sectionTitles.map(section => (sectionDrawerStates[section] = false));
@@ -82,7 +85,18 @@ const RightSideBar = ({ handlePrint }) => {
         </div>
       ))}
       <Tooltip title="Print Resume" placement={matches ? 'right' : 'bottom'} arrow>
-        <Button onClick={handlePrint}>
+        <Button onClick={e => {
+          handlePrint();
+          sendGTMEvent({
+            event: 'print_button',
+            value: { user: {
+              fullName: user.fullName,
+              email: user.primaryEmailAddress[0],
+              id: user.id,
+            } },
+          });
+        }}
+        >
           <PrintIcon style={{ color: 'white' }} size="100px" />
         </Button>
       </Tooltip>
