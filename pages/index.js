@@ -2,6 +2,7 @@ import { Button } from '@material-ui/core';
 import GitHubIcon from '@material-ui/icons/GitHub';
 import Head from 'next/head';
 import Link from 'next/link';
+import Script from 'next/script';
 import React from 'react';
 import { BuyMeACoffee } from '../components/SVGs';
 import { Faq } from '../components/landing/Faq';
@@ -10,6 +11,17 @@ import { features } from '../shared/contants';
 export default function Home() {
   // const desktop = useMediaQuery('(min-width:1024px)');
   const date = new Date();
+  const onClick = async event => {
+    try {
+      try {
+        window.fbq('trackCustom', event);
+      } catch (e) {
+        console.log(e);
+      }
+    } catch (e) {
+      console.log(e);
+    }
+  };
   return (
     <>
       <Head>
@@ -22,8 +34,34 @@ export default function Home() {
         <meta property="og:type" content="website" />
         <meta property="og:site_name" content="OS Resume" />
         <meta property="og:url" content="https://osresume.vercel.com/" />
-      </Head>
 
+      </Head>
+      <Script
+        id="meta-pixel"
+        dangerouslySetInnerHTML={{
+          __html: `
+!function(f,b,e,v,n,t,s)
+{if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+n.queue=[];t=b.createElement(e);t.async=!0;
+t.src=v;s=b.getElementsByTagName(e)[0];
+s.parentNode.insertBefore(t,s)}(window, document,'script',
+'https://connect.facebook.net/en_US/fbevents.js');
+fbq('init', '253902167786104');
+fbq('track', 'PageView');
+`,
+        }}
+      />
+      {/* Noscript fallback for Meta Pixel */}
+      <noscript>
+        <img
+          height="1"
+          width="1"
+          style={{ display: 'none' }}
+          src="https://www.facebook.com/tr?id=253902167786104&ev=PageView&noscript=1"
+        />
+      </noscript>
       {/* Landing Section */}
       <section className="min-h-screen p-10 lg:p-30 landing-container opacity-100 transition-all flex flex-col lg:block justify-center lg:justify-start items-center lg:items-start">
         {' '}
@@ -32,11 +70,10 @@ export default function Home() {
           <h1 className="text-2xl lg:text-4xl text-left lg:text-center text-white font-semibold">Building Process</h1>
         </div>
         <h1 className="text-lg text-center text-white font-medium mb-6">Create your professional resume in 15 minutes</h1>
+
         <div className="flex justify-start lg:justify-center mb-6">
-          <Link className="px-6 py-4 text-md bg-primary text-white rounded shadow-sm" href="/templates">
-
+          <Link onClick={() => onClick('start-building-tapped-main')} className="px-6 py-4 text-md bg-primary text-white rounded shadow-sm" href="/templates">
             Start Building
-
           </Link>
         </div>
         <div className="hidden lg:block relative rounded overflow-hidden shadow-sm">
@@ -75,7 +112,7 @@ export default function Home() {
             effective resume in several clicks. Choose a design, fill in your details and ideas. Fast and simple.
           </p>
           <div className="flex justify-center mt-6">
-            <Link href="/templates" className="px-6 py-4 text-md bg-primary text-white rounded shadow-sm">
+            <Link onClick={() => onClick('start-building-tapped-secondary')} href="/templates" className="px-6 py-4 text-md bg-primary text-white rounded shadow-sm">
 
               Start Building Now!
 
@@ -125,13 +162,13 @@ export default function Home() {
         </div>
         <div className="mt-8 sm:w-full sm:max-w-md xl:mt-0 xl:ml-8">
           <div className="mt-3 rounded-md sm:mt-0 sm:ml-3 sm:flex-shrink-0">
-            <a target="_blank" href="https://github.com/vishwajeetraj11/osresume" rel="noreferrer">
+            <a onClick={() => onClick('github')} target="_blank" href="https://github.com/vishwajeetraj11/osresume" rel="noreferrer">
               <Button className="w-full flex items-center justify-center px-5 py-3 border border-transparent text-base leading-6 font-medium rounded-md text-white  transition duration-150 ease-in-out mb-4">
                 <GitHubIcon /> <p className="ml-4">Github</p>
               </Button>
             </a>
 
-            <a target="_blank" href="https://www.buymeacoffee.com/vishwajeetraj11" rel="noreferrer">
+            <a onClick={() => onClick('buy-me-a-coffee')} target="_blank" href="https://www.buymeacoffee.com/vishwajeetraj11" rel="noreferrer">
               <Button className="w-full flex items-center justify-center px-5 py-3 border border-transparent text-base leading-6 font-medium rounded-md text-white  transition duration-150 ease-in-out">
                 <BuyMeACoffee height={50} />
               </Button>

@@ -3,6 +3,7 @@ import { Button } from '@material-ui/core';
 import axios from 'axios';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
+import Script from 'next/script';
 import React, { useEffect, useState } from 'react';
 import { toast } from 'sonner';
 import { ErrorSVG, NoFilesFoundSVG } from '../components/SVGs';
@@ -19,6 +20,13 @@ const Templates = () => {
   const { getToken } = useAuth();
 
   const onSelect = id => {
+    try {
+      window.fbq('trackCustom', 'template-changed', {
+        template: id,
+      });
+    } catch (e) {
+      console.log(e);
+    }
     setSelectedTemplate(id);
   };
 
@@ -38,6 +46,13 @@ const Templates = () => {
     }
   };
   const onCreate = async () => {
+    try {
+      window.fbq('trackCustom', 'resume-create', {
+        template: selectedTemplate.templateName,
+      });
+    } catch (e) {
+      console.log(e);
+    }
     try {
       showSnack(toastMessages.CREATE_RESOURCE_REQUEST('Resume'), 'default');
       const token = await getToken();
@@ -120,7 +135,34 @@ const Templates = () => {
     <div className="py-12 lg:max-w-screen-xl mx-auto">
       <Head>
         <title>Templates | OS Resume</title>
+
       </Head>
+      <Script
+        id="meta-pixel"
+        dangerouslySetInnerHTML={{
+          __html: `
+!function(f,b,e,v,n,t,s)
+{if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+n.queue=[];t=b.createElement(e);t.async=!0;
+t.src=v;s=b.getElementsByTagName(e)[0];
+s.parentNode.insertBefore(t,s)}(window, document,'script',
+'https://connect.facebook.net/en_US/fbevents.js');
+fbq('init', '253902167786104');
+fbq('track', 'PageView');
+`,
+        }}
+      />
+      {/* Noscript fallback for Meta Pixel */}
+      <noscript>
+        <img
+          height="1"
+          width="1"
+          style={{ display: 'none' }}
+          src="https://www.facebook.com/tr?id=253902167786104&ev=PageView&noscript=1"
+        />
+      </noscript>
       <h1 className="text-3xl lg:text-5xl font-extralight text-center pb-10">Browse All Templates</h1>
 
       {!noTemplate && (
